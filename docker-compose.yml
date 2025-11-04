@@ -1,0 +1,34 @@
+services:
+  flecsd:
+    image: flecspublic.azurecr.io/flecs-slim:4.1.1-snowhare
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - flecsd:/var/lib/flecs
+    restart: always
+    network_mode: host
+    command: 172.21.0.1
+
+  webapp:
+    image: flecspublic.azurecr.io/webapp:4.1.0-snowhare
+    ports:
+      - "8081:80"
+    depends_on:
+      - flecsd
+    restart: always
+    extra_hosts:
+      - flecs-floxy:172.21.0.1
+    networks:
+      flecs:
+        ipv4_address: 172.21.255.254
+
+volumes:
+  flecsd:
+
+networks:
+  flecs:
+    name: flecs
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.0.0/16
+          gateway: 172.21.0.1
