@@ -1,4 +1,3 @@
-version: "3.7"
 services:
   flecsd:
     image: flecspublic.azurecr.io/flecs-slim:4.1.1-snowhare
@@ -8,10 +7,11 @@ services:
     restart: always
     network_mode: host
     command: 172.21.0.1
+
   webapp:
     image: flecspublic.azurecr.io/webapp:4.1.0-snowhare
     ports:
-      - 8081:80
+      - "8081:80"
     depends_on:
       - flecsd
     restart: always
@@ -20,8 +20,10 @@ services:
     networks:
       flecs:
         ipv4_address: 172.21.255.254
+
 volumes:
   flecsd:
+
 networks:
   flecs:
     name: flecs
@@ -29,3 +31,4 @@ networks:
     ipam:
       config:
         - subnet: 172.21.0.0/16
+          gateway: 172.21.0.1
